@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercado de Cuscuz</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #313131;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+        }
+
+        .ticker-bar {
+            background-color: black;
+            color: lime;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 10px 0;
+            overflow: hidden;
+            white-space: nowrap;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            box-sizing: border-box;
+        }
+
+        /* Barra superior */
+        .ticker-bar.top {
+            top: 0;
+        }
+
+        /* Barra inferior */
+        .ticker-bar.bottom {
+            bottom: 0;
+        }
+
+        /* Texto da barra com números */
+        .ticker-text {
+            display: inline-block;
+            animation: ticker 50s linear infinite;
+            white-space: nowrap;
+        }
+
+        /* Ajuste da animação para repetir sem intervalo */
+        @keyframes ticker {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* Painel Central */
+        .dashboard-container {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .conversion-panel {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .conversion-panel h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .conversion-panel input {
+            padding: 10px;
+            font-size: 16px;
+            width: 100%;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .conversion-panel button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .conversion-panel button:hover {
+            background-color: #218838;
+        }
+
+        .conversion-panel .result {
+            margin-top: 20px;
+            font-size: 20px;
+            color: #333;
+        }
+
+        /* Adicionar imagem ao lado da calculadora */
+        .image-container {
+            position: relative;
+            margin-left: 20px;
+        }
+
+        .image-container img {
+            max-width: 300px;
+            border-radius: 10px;
+        }
+
+        /* Número centralizado na imagem */
+        .image-container .result-number {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5rem;
+            color: white;
+            font-weight: bold;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra superior com ticker de preços do cuscuz -->
+    <div class="ticker-bar top">
+        <div class="ticker-text" id="ticker-top">
+            <!-- Números aleatórios serão inseridos pelo JavaScript -->
+        </div>
+    </div>
+
+    <!-- Painel de conversão central com imagem ao lado -->
+    <div class="dashboard-container">
+        <div class="conversion-panel">
+            <h1>Conversão de Valor para Pacotes de Cuscuz</h1>
+            <input type="number" id="valorEmReais" placeholder="Insira o valor em R$">
+            <button onclick="calcularPacotes()">Calcular</button>
+            <div class="result" id="resultadoPacotes"></div>
+        </div>
+
+        <!-- Container de imagem ao lado da calculadora -->
+        <div class="image-container">
+            <img src="flocao.png" alt="Imagem do Cuscuz">
+            <div class="result-number" id="numeroNaImagem"></div>
+        </div>
+    </div>
+
+    <!-- Barra inferior com ticker de preços do cuscuz -->
+    <div class="ticker-bar bottom">
+        <div class="ticker-text" id="ticker-bottom">
+            <!-- Números aleatórios serão inseridos pelo JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Função para calcular o número de pacotes de cuscuz
+        function calcularPacotes() {
+            var precoCuscuz = 1.79; // Preço de referência do cuscuz
+            var valor = document.getElementById("valorEmReais").value;
+            
+            if (valor > 0) {
+                var pacotes = Math.floor(valor / precoCuscuz);
+                document.getElementById("numeroNaImagem").innerHTML = pacotes;
+            } else {
+                document.getElementById("resultadoPacotes").innerHTML = "Por favor, insira um valor válido!";
+                document.getElementById("numeroNaImagem").innerHTML = "";
+            }
+        }
+
+        // Função para gerar números aleatórios para o ticker
+        function gerarNumerosAleatorios() {
+            var marcas = [
+                { nome: "Cuscuz Amarelo", valor: 1.79 },
+                { nome: "Cuscuz do Sertão", valor: 2.10 },
+                { nome: "Cuscuz Nordestino", valor: 1.95 },
+                { nome: "Cuscuz Tradicional", valor: 2.25 },
+                { nome: "Cuscuz Light", valor: 1.65 },
+                { nome: "Cuscuz Integral", valor: 2.00 },
+                { nome: "Cuscuz Gourmet", valor: 2.50 },
+                
+            ];
+
+            // Texto das barras
+            var textoTop = '';
+            var textoBottom = '';
+
+            marcas.forEach(function(marca) {
+                var variacao = (Math.random() > 0.5 ? "▲" : "▼");
+                var cor = variacao === "▲" ? "lime" : "red"; // Cor verde para alta, vermelho para baixa
+                var valor = (marca.valor + (Math.random() * 0.2 - 0.1)).toFixed(2); // Variação aleatória no preço
+                
+                // Adicionar ao ticker superior
+                textoTop += `<span style="color: ${cor};">${marca.nome} - R$ ${valor} ${variacao} </span> | `;
+                // Adicionar ao ticker inferior
+                textoBottom += `<span style="color: ${cor};">${marca.nome} - R$ ${valor} ${variacao} </span> | `;
+            });
+
+            // Inserir os textos nas barras
+            document.getElementById('ticker-top').innerHTML = textoTop;
+            document.getElementById('ticker-bottom').innerHTML = textoBottom;
+        }
+
+        // Gerar os números aleatórios ao carregar a página
+        gerarNumerosAleatorios();
+
+        // Atualizar os números do ticker a cada 10 segundos
+        setInterval(gerarNumerosAleatorios, 10000);
+    </script>
+
+</body>
+</html>
